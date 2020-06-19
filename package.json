@@ -1,0 +1,12 @@
+{
+  "name": "ecpay",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "moment": "^2.27.0"
+  }
+}
