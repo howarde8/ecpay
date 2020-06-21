@@ -25,7 +25,7 @@ const urlencode_dot_net = (raw_data, case_tr = 'DOWN') => {
 };
 
 exports.genCheckMacValue = ({ info: params, hashKey: hkey, hashIV: hiv }) => {
-  // Code comes from ECPay/ECPayAIO_Node.js
+  // Code comes from ECPay/ECPayAIO_Node.js with adjustment
   if (typeof params === 'object') {
     // throw exception if param contains CheckMacValue, HashKey, HashIV
     let sec = ['CheckMacValue', 'HashKey', 'HashIV'];
@@ -35,19 +35,17 @@ exports.genCheckMacValue = ({ info: params, hashKey: hkey, hashIV: hiv }) => {
       }
     });
 
-    let od = {};
     let temp_arr = Object.keys(params).sort(function (a, b) {
       return a.toLowerCase().localeCompare(b.toLowerCase());
     });
-    // console.log(temp_arr);
+    let concat_str = temp_arr
+      .map((key) => `${key}=${params[key]}`)
+      .join('&')
+      .toLocaleLowerCase();
+    // console.log(concat_str); // Comment this line
 
-    let raw = temp_arr.forEach(function (key) {
-      od[key] = params[key];
-    });
-    raw = JSON.stringify(od).toLowerCase().replace(/":"/g, '=');
-    raw = raw.replace(/","|{"|"}/g, '&');
-    raw = urlencode_dot_net(`HashKey=${hkey}${raw}HashIV=${hiv}`);
-    // console.log(raw);
+    let raw = urlencode_dot_net(`HashKey=${hkey}&${concat_str}&HashIV=${hiv}`);
+    // console.log(raw); // Comment this line
 
     let chksum = crypto.createHash('sha256').update(raw).digest('hex');
 
